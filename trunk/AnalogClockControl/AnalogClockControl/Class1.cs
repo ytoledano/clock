@@ -101,6 +101,8 @@ namespace AnalogClockControl
             {
                 ThreadPool.QueueUserWorkItem(o => Console.Beep(_random.NextDouble() > 0.5 ? SOUND_1_HZ : SOUND_2_HZ, 100));
                 _soundPlayedMS = MSSinceBeg();
+                double beepRad = (_soundPlayedMS/CYCLE_MS)*2*PI + _needleOffset;
+                _beepSecs = (60 * beepRad / (2 * PI)) % 60;
                 _isPlayedSound = true;
             }
             if (_isPlayedSound && MSSinceBeg() > _soundPlayedMS + MS_AFTER_SOUND)
@@ -109,7 +111,7 @@ namespace AnalogClockControl
                 var userInputFurm = new UserInputForm("שמעתי את הצפצוף כשהמחוג היה ב (0-59):");
                 userInputFurm.ShowDialog();
                 int userInput = userInputFurm.UserInput;
-                OnTestComplete(userInput);
+                OnTestComplete(userInput,_beepSecs);
             }
         }
 
@@ -157,7 +159,7 @@ namespace AnalogClockControl
 
         private void AnalogClock_Paint(object sender, PaintEventArgs e)
         {
-            double ms = (DateTime.UtcNow - _startTime).TotalMilliseconds;
+            double ms = MSSinceBeg();
             if (_startTime == default(DateTime))
                 ms = 0;
             double fRadHr = (ms / CYCLE_MS) * 2 * PI + _needleOffset;
@@ -251,8 +253,9 @@ namespace AnalogClockControl
 
         private Timer _timer1;
         private double _soundPlayedMS;
+        private double _beepSecs;
 
-        public delegate void TestCompleteDel(int userInput);
+        public delegate void TestCompleteDel(int userInput, double beepSecs);
         public event TestCompleteDel OnTestComplete;
     }
 }

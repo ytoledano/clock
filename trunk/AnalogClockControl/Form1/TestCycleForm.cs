@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AnalogClockControl;
+using System.IO;
 
 namespace Form1
 {
@@ -38,8 +39,9 @@ namespace Form1
             clockControl.BeReady();
         }
 
-        private void OnTestComplete(int userInput)
+        private void OnTestComplete(int userInputSecs, double beepSecs)
         {
+            LogResult(_i,userInputSecs, beepSecs);
             _i++;
             _countLabel.Text = (_i + 1).ToString();
             foreach (var c in _clockGroup.Controls)
@@ -60,6 +62,16 @@ namespace Form1
             clockControl.OnTestComplete += OnTestComplete;
             clockControl.BeReady();
             clockControl.Focus();
+        }
+
+        private void LogResult(int gameNum, int userInputSecs, double beepSecs)
+        {
+            FileInfo file = new FileInfo("output.csv");
+            if (!file.Exists)
+                File.WriteAllText(file.FullName,"Subject ID,Cycle Num,Test Num,User Secs, Beep Secs,Time\r\n");
+            File.AppendAllText(file.FullName,
+                string.Format("{0},{1},{2},{3},{4},{5}\r\n", Form1.Form._idText.Text, _testNum, gameNum + 1,
+                    userInputSecs, beepSecs, DateTime.Now));
         }
 
 
