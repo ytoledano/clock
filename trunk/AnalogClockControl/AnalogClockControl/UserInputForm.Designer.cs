@@ -31,6 +31,8 @@
             this._okBtn = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this._rightBtn = new System.Windows.Forms.Button();
+            this._leftBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _okBtn
@@ -63,12 +65,36 @@
             this.label1.Text = "המחוג עצר ב (0-59):";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // _rightBtn
+            // 
+            this._rightBtn.Location = new System.Drawing.Point(168, 74);
+            this._rightBtn.Name = "_rightBtn";
+            this._rightBtn.Size = new System.Drawing.Size(75, 23);
+            this._rightBtn.TabIndex = 3;
+            this._rightBtn.Text = "ימין";
+            this._rightBtn.UseVisualStyleBackColor = true;
+            this._rightBtn.Visible = false;
+            this._rightBtn.Click += new System.EventHandler(this.SideBtnClick);
+            // 
+            // _leftBtn
+            // 
+            this._leftBtn.Location = new System.Drawing.Point(87, 74);
+            this._leftBtn.Name = "_leftBtn";
+            this._leftBtn.Size = new System.Drawing.Size(75, 23);
+            this._leftBtn.TabIndex = 4;
+            this._leftBtn.Text = "שמאל";
+            this._leftBtn.UseVisualStyleBackColor = true;
+            this._leftBtn.Visible = false;
+            this._leftBtn.Click += new System.EventHandler(this.SideBtnClick);
+            // 
             // UserInputForm
             // 
             this.AcceptButton = this._okBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(255, 113);
+            this.Controls.Add(this._leftBtn);
+            this.Controls.Add(this._rightBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this._okBtn);
@@ -83,5 +109,7 @@
         private System.Windows.Forms.Button _okBtn;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button _rightBtn;
+        private System.Windows.Forms.Button _leftBtn;
     }
 }

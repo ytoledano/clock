@@ -10,12 +10,20 @@ namespace AnalogClockControl
 {
     public partial class UserInputForm : Form
     {
-        public UserInputForm(string question = null)
+        public UserInputForm(string question = null, bool displayLeftRight = false)
         {
             InitializeComponent();
             ControlBox = false;
             label1.Text = question ?? "";
-            textBox1.Focus();
+            if (displayLeftRight)
+            {
+                _leftBtn.Visible = _rightBtn.Visible = true;
+                textBox1.Visible = _okBtn.Visible = false;
+            }
+            else
+            {
+                textBox1.Focus();
+            }
         }
 
         protected override void OnActivated(EventArgs e)
@@ -33,6 +41,12 @@ namespace AnalogClockControl
                 return;
             }
             MessageBox.Show("בבקשה, מספר בין 0 ל-59");
+        }
+
+        private void SideBtnClick(object sender, EventArgs e)
+        {
+            UserInput = ((Button) sender).Name == "_leftBtn" ? 1 : -1;
+            Close();
         }
 
         public int UserInput { get; private set; }
