@@ -14,7 +14,6 @@ namespace Form1
 {
     public partial class TestCycleForm : Form
     {
-
         public TestCycleForm()
         {
             InitializeComponent();
@@ -41,8 +40,11 @@ namespace Form1
 
         private void OnTestComplete(int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz)
         {
-            LogResult(_i, userInputSecs, beepSecs, sideClicked, secsClicked,inhibition,soundHz);
-            _i++;
+            if (userInputSecs != -1)
+            {
+                LogResult(_i, userInputSecs, beepSecs, sideClicked, secsClicked, inhibition, soundHz);
+                _i++;
+            }
             _countLabel.Text = (_i + 1).ToString();
             foreach (var c in _clockGroup.Controls)
                 ((AnalogClock) c).OnTestComplete -= OnTestComplete;

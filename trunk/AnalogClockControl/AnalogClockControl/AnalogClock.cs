@@ -185,7 +185,7 @@ namespace AnalogClockControl
                         userInputFurm.ShowDialog();
                         int userInput = userInputFurm.UserInput;
                         string inhibition = "";
-                        if (_msClicked == -1)
+                        if (_msClicked == -1 && userInput != -1) // -1 == oops
                         {
                             var userInputForm2 = new UserInputForm("לא לחצתי, אך התכוונתי ללחוץ על כפתור:", true);
                             userInputForm2.ShowDialog();
@@ -215,15 +215,6 @@ namespace AnalogClockControl
         public void Stop()
         {
             _timer1.Enabled = false;
-        }
-
-        private void DrawLine(double fThickness, double fLength, Color color, double fRadians, PaintEventArgs e)
-        {
-            e.Graphics.DrawLine(new Pen(color, (float)fThickness),
-                (float)(_fCenterX - fLength / 9 * Math.Sin(fRadians)),
-               (float)(_fCenterY + fLength / 9 * Math.Cos(fRadians)),
-               (float)(_fCenterX + fLength * Math.Sin(fRadians)),
-               (float)(_fCenterY - fLength * Math.Cos(fRadians)));
         }
 
         private void DrawPolygon(double fThickness, double fLength, Color color, double fRadians, PaintEventArgs e)
