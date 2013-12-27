@@ -25,7 +25,7 @@ namespace Form1
         {
             _testNum = testNum;
             Text = "שעון " + testNum;
-            _testCount = _testNum == 1 ? 3 : 50;
+            _testCount = _testNum == 1 ? 25 : 50;
 
         }
 
@@ -39,16 +39,13 @@ namespace Form1
             clockControl.BeReady();
         }
 
-        private void OnTestComplete(int userInputSecs, double beepSecs)
+        private void OnTestComplete(int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz)
         {
-            LogResult(_i,userInputSecs, beepSecs);
+            LogResult(_i, userInputSecs, beepSecs, sideClicked, secsClicked,inhibition,soundHz);
             _i++;
             _countLabel.Text = (_i + 1).ToString();
             foreach (var c in _clockGroup.Controls)
-            {
-                ((AnalogClock)c).OnTestComplete -= OnTestComplete;
-
-            }
+                ((AnalogClock) c).OnTestComplete -= OnTestComplete;
             _clockGroup.Controls.Clear();
             if (_i >= _testCount)
             {
@@ -64,20 +61,18 @@ namespace Form1
             clockControl.Focus();
         }
 
-        private void LogResult(int gameNum, int userInputSecs, double beepSecs)
+        private void LogResult(int gameNum, int userInputSecs, double beepSecs,string sideClicked,double secsClicked,string inhibition, int soundHz)
         {
             FileInfo file = new FileInfo("output.csv");
             if (!file.Exists)
-                File.WriteAllText(file.FullName,"Subject ID,Cycle Num,Test Num,User Secs, Beep Secs,Time\r\n");
+                File.WriteAllText(file.FullName, "Subject ID,Time,Cycle Num,Test Num,User Secs,Beep Secs,Side Clicked,Inhibition,Clicked Secs,Sound HZ\r\n");
             File.AppendAllText(file.FullName,
-                string.Format("{0},{1},{2},{3},{4},{5}\r\n", Form1.Form._idText.Text, _testNum, gameNum + 1,
-                    userInputSecs, beepSecs, DateTime.Now));
+                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9}\r\n", Form1.Form._idText.Text, DateTime.Now, _testNum, gameNum + 1,
+                    userInputSecs, beepSecs, sideClicked, inhibition, secsClicked, soundHz));
         }
-
-
 
         private int _i;
         private readonly int _testNum;
-        int _testCount;
+        readonly int _testCount;
     }
 }
