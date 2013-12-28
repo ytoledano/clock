@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Media;
 using System.Threading;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
@@ -57,7 +59,7 @@ namespace AnalogClockControl
             // timer1
             // 
             this._timer1.Enabled = false;
-            this._timer1.Interval = 22;
+            this._timer1.Interval = 15;
             this._timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // AnalogClock
@@ -122,7 +124,9 @@ namespace AnalogClockControl
                     if (!_isPlayedSound && MSSinceBeg() > MS_TO_SOUND)
                     {
                         _soundPlayedHz = Chance(0.5) ? SOUND_1_HZ : SOUND_2_HZ;
-                        ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        SoundPlayer player = new SoundPlayer(_soundPlayedHz+".wav");
+                        player.Play();
                         _soundPlayedMS = MSSinceBeg();
                         double beepRad = (_soundPlayedMS/CYCLE_MS)*2*PI + _needleOffset;
                         _beepSecs = (60*beepRad/(2*PI))%60;
@@ -141,7 +145,9 @@ namespace AnalogClockControl
                     if (!_isPlayedSound && _msClicked != -1 && MSSinceBeg() - _msClicked > MS_SOUND_AFTER_CLICK)
                     {
                         _soundPlayedHz = Chance(_sideClicked == "right" ? 0.8 : 0.2) ? SOUND_1_HZ : SOUND_2_HZ;
-                        ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        SoundPlayer player = new SoundPlayer(_soundPlayedHz + ".wav");
+                        player.Play();
                         _soundPlayedMS = MSSinceBeg();
                         double beepRad = (_soundPlayedMS / CYCLE_MS) * 2 * PI + _needleOffset;
                         _beepSecs = (60 * beepRad / (2 * PI)) % 60;
@@ -162,7 +168,9 @@ namespace AnalogClockControl
                     if (!_isPlayedSound && _msClicked != -1 && MSSinceBeg() - _msClicked > MS_SOUND_AFTER_CLICK)
                     {
                         _soundPlayedHz = Chance(_sideClicked == "right" ? 0.8 : 0.2) ? SOUND_1_HZ : SOUND_2_HZ;
-                        ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        SoundPlayer player = new SoundPlayer(_soundPlayedHz + ".wav");
+                        player.Play();
                         _soundPlayedMS = MSSinceBeg();
                         double beepRad = (_soundPlayedMS / CYCLE_MS) * 2 * PI + _needleOffset;
                         _beepSecs = (60 * beepRad / (2 * PI)) % 60;
@@ -172,7 +180,9 @@ namespace AnalogClockControl
                     {
                         _soundPlayedHz = Chance(0.5) ? SOUND_1_HZ : SOUND_2_HZ;
                         _sideClicked = "";
-                        ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        SoundPlayer player = new SoundPlayer(_soundPlayedHz + ".wav");
+                        player.Play();
                         _soundPlayedMS = MSSinceBeg();
                         double beepRad = (_soundPlayedMS / CYCLE_MS) * 2 * PI + _needleOffset;
                         _beepSecs = (60 * beepRad / (2 * PI)) % 60;
@@ -234,6 +244,7 @@ namespace AnalogClockControl
 
         private void AnalogClock_Paint(object sender, PaintEventArgs e)
         {
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             double ms = MSSinceBeg();
             if (_startTime == default(DateTime))
                 ms = 0;
@@ -241,14 +252,16 @@ namespace AnalogClockControl
             e.Graphics.FillEllipse(new SolidBrush(Color.White), (float)(_fCenterX - _fCenterCircleRadius / 2), (float)(_fCenterY - _fCenterCircleRadius / 2),
                 (float)_fCenterCircleRadius, (float)_fCenterCircleRadius);
             DrawPolygon(_fHourThickness, _fHourLength, _hrColor, fRadHr, e);
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
-            e.Graphics.FillPolygon(new SolidBrush(Color.White), new[] { new PointF(0, 0), new PointF(Width, 0), new PointF(Width, Height) });
-            e.Graphics.FillPolygon(new SolidBrush(Color.White), new[] { new PointF(0, 0), new PointF(0, Height), new PointF(Width, Height) });
+            if (_fCenterX != 75)
+            {
+                e.Graphics.FillPolygon(new SolidBrush(Color.White), new[] {new PointF(0, 0), new PointF(Width, 0), new PointF(Width, Height)});
+                e.Graphics.FillPolygon(new SolidBrush(Color.White), new[] {new PointF(0, 0), new PointF(0, Height), new PointF(Width, Height)});
+            }
             if (_isFirst)
                 Controls.Clear();
             for (int i = 0; i < 60; i++)
@@ -260,7 +273,7 @@ namespace AnalogClockControl
                         (float)_fCenterY - (float)(_fRadius / 1.50F * Math.Cos(i * 6 * PI / 180)),
                         (float)_fCenterX + (float)(_fRadius / 1.65F * Math.Sin(i * 6 * PI / 180)),
                         (float)_fCenterY - (float)(_fRadius / 1.65F * Math.Cos(i * 6 * PI / 180)));
-                    if (_isFirst)
+                    if (_isFirst && _fCenterX!=75)
                     {
                         var label = new Label
                         {
@@ -285,7 +298,7 @@ namespace AnalogClockControl
             _fRadius = (double)Height / 2;
             _fCenterX = (double)ClientSize.Width / 2;
             _fCenterY = (double)ClientSize.Height / 2;
-            _fHourLength = (double)Height / 3 / 1.65F;
+            _fHourLength = (double)Height / 3 / 1.45F;
             _fHourThickness = (double)Height / 100;
             _fCenterCircleRadius = (double)Height / 2;
             Refresh();
@@ -332,7 +345,7 @@ namespace AnalogClockControl
 
         private const double F_TICKS_THICKNESS = 1;
 
-        readonly Color _hrColor = Color.DarkMagenta;
+        readonly Color _hrColor = Color.DarkRed;
         readonly Color _ticksColor = Color.Black;
 
         private Timer _timer1;
