@@ -19,10 +19,10 @@ namespace AnalogClockControl
 
         private System.ComponentModel.IContainer components;
 
-        public AnalogClock(int testNum, bool isAskAboutSound)
+        public AnalogClock(int testNum, bool startWithSpace)
         {
             _testNum = testNum;
-            _isAskAboutSound = isAskAboutSound;
+            _startWithSpace = startWithSpace;
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
@@ -137,16 +137,7 @@ namespace AnalogClockControl
                         var userInputFurm = new UserInputForm("שמעתי את הצפצוף כשהמחוג היה ב (0-59):");
                         userInputFurm.ShowDialog();
                         int userInput = userInputFurm.UserInput;
-                        int userSound = -1;
-                        if (_isAskAboutSound)
-                        {
-                            userInputFurm = new UserInputForm("כמה גבוה היה הצליל? (1-100)");
-                            userInputFurm.ShowDialog();
-                            userSound = userInputFurm.UserInput;
-                            if (userSound == -1)
-                                userInput = -1;
-                        }
-                        OnTestComplete(userInput, _beepSecs, "", 0, "", _soundPlayedHz, userSound);
+                        OnTestComplete(userInput, _beepSecs, "", 0, "", _soundPlayedHz);
                     }
                     return;
                 case 2:
@@ -167,18 +158,9 @@ namespace AnalogClockControl
                         var userInputFurm = new UserInputForm("שמעתי את הצפצוף כשהמחוג היה ב (0-59):");
                         userInputFurm.ShowDialog();
                         int userInput = userInputFurm.UserInput;
-                        int userSound = -1;
-                        if (_isAskAboutSound)
-                        {
-                            userInputFurm = new UserInputForm("כמה גבוה היה הצליל? (1-100)");
-                            userInputFurm.ShowDialog();
-                            userSound = userInputFurm.UserInput;
-                            if (userSound == -1)
-                                userInput = -1;
-                        }
                         double clickedRad = (_msClicked / CYCLE_MS) * 2 * PI + _needleOffset;
                         double clickedSecs = (60 * clickedRad / (2 * PI)) % 60;
-                        OnTestComplete(userInput, _beepSecs, _sideClicked, clickedSecs,"", _soundPlayedHz,userSound);
+                        OnTestComplete(userInput, _beepSecs, _sideClicked, clickedSecs,"", _soundPlayedHz);
                     }
                     return;
                 case 3:
@@ -210,15 +192,7 @@ namespace AnalogClockControl
                         Stop();
                         var userInputFurm = new UserInputForm("שמעתי את הצפצוף כשהמחוג היה ב (0-59):");
                         userInputFurm.ShowDialog();
-                        int userInput = userInputFurm.UserInput; int userSound = -1;
-                        if (_isAskAboutSound)
-                        {
-                            userInputFurm = new UserInputForm("כמה גבוה היה הצליל? (1-100)");
-                            userInputFurm.ShowDialog();
-                            userSound = userInputFurm.UserInput;
-                            if (userSound == -1)
-                                userInput = -1;
-                        }
+                        int userInput = userInputFurm.UserInput;
                         string inhibition = "";
                         if (_msClicked == -1 && userInput != -1) // -1 == oops
                         {
@@ -228,7 +202,7 @@ namespace AnalogClockControl
                         }
                         double clickedRad = (_msClicked / CYCLE_MS) * 2 * PI + _needleOffset;
                         double clickedSecs = (60 * clickedRad / (2 * PI)) % 60;
-                        OnTestComplete(userInput, _beepSecs, _sideClicked, clickedSecs,inhibition,_soundPlayedHz,userSound);
+                        OnTestComplete(userInput, _beepSecs, _sideClicked, clickedSecs,inhibition,_soundPlayedHz);
                     }
                     return;
             }
@@ -238,6 +212,8 @@ namespace AnalogClockControl
         {
             _isFirst = true;
             Refresh();
+            if (!_startWithSpace)
+                Start();
         }
 
         public void Start()
@@ -284,10 +260,10 @@ namespace AnalogClockControl
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
-            Image image = Image.FromFile(@"C:\temp\bell.bmp");
             if (_mode == Modes.Sound)
             {
-                e.Graphics.DrawImage(image,0,0);
+                Image image = Image.FromFile(@"C:\temp\bell.bmp");
+                e.Graphics.DrawImage(image, 0, 0);
             }
             else
             {
@@ -368,7 +344,7 @@ namespace AnalogClockControl
         private int _soundPlayedHz;
 
         private readonly int _testNum;
-        private readonly bool _isAskAboutSound;
+        private readonly bool _startWithSpace;
         const double PI = Math.PI;
 
         private DateTime _startTime;
@@ -391,7 +367,7 @@ namespace AnalogClockControl
         private double _soundPlayedMS;
         private double _beepSecs;
 
-        public delegate void TestCompleteDel(int userInput, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz, int userSound);
+        public delegate void TestCompleteDel(int userInput, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz);
         public event TestCompleteDel OnTestComplete;
     }
 }
