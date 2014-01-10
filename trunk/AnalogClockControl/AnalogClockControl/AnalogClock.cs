@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Media;
-using System.Threading;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
@@ -271,6 +269,8 @@ namespace AnalogClockControl
 
         private void AnalogClock_Paint(object sender, PaintEventArgs e)
         {
+            if (_mode == Modes.Sound)
+                return;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             double ms = MSSinceBeg();
             if (_startTime == default(DateTime))
@@ -284,39 +284,47 @@ namespace AnalogClockControl
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
-            if (_fCenterX != 75)
+            Image image = Image.FromFile(@"C:\temp\bell.bmp");
+            if (_mode == Modes.Sound)
             {
-                e.Graphics.FillPolygon(new SolidBrush(Color.White), new[] {new PointF(0, 0), new PointF(Width, 0), new PointF(Width, Height)});
-                e.Graphics.FillPolygon(new SolidBrush(Color.White), new[] {new PointF(0, 0), new PointF(0, Height), new PointF(Width, Height)});
+                e.Graphics.DrawImage(image,0,0);
             }
-            if (_isFirst)
-                Controls.Clear();
-            for (int i = 0; i < 60; i++)
+            else
             {
-                if (i % 5 == 0) // Draw 5 minute ticks
+                if (_fCenterX != 75)
                 {
-                    e.Graphics.DrawLine(new Pen(_ticksColor, (float)F_TICKS_THICKNESS),
-                        (float)_fCenterX + (float)(_fRadius / 1.50F * Math.Sin(i * 6 * PI / 180)),
-                        (float)_fCenterY - (float)(_fRadius / 1.50F * Math.Cos(i * 6 * PI / 180)),
-                        (float)_fCenterX + (float)(_fRadius / 1.65F * Math.Sin(i * 6 * PI / 180)),
-                        (float)_fCenterY - (float)(_fRadius / 1.65F * Math.Cos(i * 6 * PI / 180)));
-                    if (_isFirst && _fCenterX!=75)
+                    e.Graphics.FillPolygon(new SolidBrush(Color.White), new[] {new PointF(0, 0), new PointF(Width, 0), new PointF(Width, Height)});
+                    e.Graphics.FillPolygon(new SolidBrush(Color.White), new[] {new PointF(0, 0), new PointF(0, Height), new PointF(Width, Height)});
+                }
+                if (_isFirst)
+                    Controls.Clear();
+                for (int i = 0; i < 60; i++)
+                {
+                    if (i%5 == 0) // Draw 5 minute ticks
                     {
-                        var label = new Label
+                        e.Graphics.DrawLine(new Pen(_ticksColor, (float) F_TICKS_THICKNESS),
+                            (float) _fCenterX + (float) (_fRadius/1.50F*Math.Sin(i*6*PI/180)),
+                            (float) _fCenterY - (float) (_fRadius/1.50F*Math.Cos(i*6*PI/180)),
+                            (float) _fCenterX + (float) (_fRadius/1.65F*Math.Sin(i*6*PI/180)),
+                            (float) _fCenterY - (float) (_fRadius/1.65F*Math.Cos(i*6*PI/180)));
+                        if (_isFirst && _fCenterX != 75)
                         {
-                            Text = i.ToString(),
-                            BackColor = Color.White,
-                            Name = "label" + i,
-                            Location =
-                                new Point((int)(_fCenterX + (float)(_fRadius / 1.40F * Math.Sin(i * 6 * PI / 180))) - 5,
-                                    (int)((float)_fCenterY - (float)(_fRadius / 1.40F * Math.Cos(i * 6 * PI / 180))) - 5),
-                            AutoSize = true,
-                        };
-                        Controls.Add(label);
+                            var label = new Label
+                            {
+                                Text = i.ToString(),
+                                BackColor = Color.White,
+                                Name = "label" + i,
+                                Location =
+                                    new Point((int) (_fCenterX + (float) (_fRadius/1.40F*Math.Sin(i*6*PI/180))) - 5,
+                                        (int) ((float) _fCenterY - (float) (_fRadius/1.40F*Math.Cos(i*6*PI/180))) - 5),
+                                AutoSize = true,
+                            };
+                            Controls.Add(label);
+                        }
                     }
                 }
+                _isFirst = false;
             }
-            _isFirst = false;
         }
 
         private void AnalogClock_Resize(object sender, EventArgs e)
@@ -342,6 +350,9 @@ namespace AnalogClockControl
             return _random.NextDouble() < probability;
         }
 
+        public enum Modes {Clock,Sound}
+
+        private Modes _mode;
         private bool _isFirst = true;
         private const double CYCLE_MS = 5120;
         private static readonly Random _random = new Random();
