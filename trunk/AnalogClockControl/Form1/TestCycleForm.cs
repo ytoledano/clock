@@ -31,18 +31,18 @@ namespace Form1
         protected override void OnLoad(EventArgs e)
         {
             _countLabel.Text = (_i + 1).ToString();
-            AnalogClock clockControl = new AnalogClock(_testNum, _i % 5 == 0);
+            AnalogClock clockControl = new AnalogClock(_testNum, true);
             _clockGroup.Controls.Add(clockControl);
             clockControl.Dock = DockStyle.Fill;
             clockControl.OnTestComplete += OnTestComplete;
             clockControl.BeReady();
         }
 
-        private void OnTestComplete(int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz, int userSound)
+        private void OnTestComplete(int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz)
         {
             if (userInputSecs != -1)
             {
-                LogResult(_i, userInputSecs, beepSecs, sideClicked, secsClicked, inhibition, soundHz, userSound);
+                LogResult(_i, userInputSecs, beepSecs, sideClicked, secsClicked, inhibition, soundHz);
                 _i++;
             }
             _countLabel.Text = (_i + 1).ToString();
@@ -55,7 +55,7 @@ namespace Form1
                 Close();
                 return;
             }
-            AnalogClock clockControl = new AnalogClock(_testNum, _i % 5 == 0);
+            AnalogClock clockControl = new AnalogClock(_testNum, false);
             _clockGroup.Controls.Add(clockControl);
             clockControl.Dock = DockStyle.Fill;
             clockControl.OnTestComplete += OnTestComplete;
@@ -63,14 +63,21 @@ namespace Form1
             clockControl.Focus();
         }
 
-        private void LogResult(int gameNum, int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz, int userSound)
+        private void LogResult(int gameNum, int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz)
         {
             FileInfo file = new FileInfo("output.csv");
             if (!file.Exists)
-                File.WriteAllText(file.FullName, "Subject ID,Time,Cycle Num,Test Num,User Secs,Beep Secs,Side Clicked,Inhibition,Clicked Secs,Sound HZ,User Pitch\r\n");
+                File.WriteAllText(file.FullName, "Subject ID,Time,Cycle Num,Test Num,User Secs,Beep Secs,Side Clicked,Inhibition,Clicked Secs,Sound HZ\r\n");
             File.AppendAllText(file.FullName,
-                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9},{10}\r\n", Form1.Form._idText.Text, DateTime.Now, _testNum, gameNum + 1,
-                    userInputSecs, beepSecs, sideClicked, inhibition, secsClicked, soundHz,userSound));
+                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9}\r\n", Form1.Form._idText.Text, DateTime.Now, _testNum, gameNum + 1,
+                    userInputSecs, beepSecs, sideClicked, inhibition, secsClicked, soundHz));
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            foreach(Control control in _clockGroup.Controls)
+                control.Dispose();
         }
 
         private int _i;
