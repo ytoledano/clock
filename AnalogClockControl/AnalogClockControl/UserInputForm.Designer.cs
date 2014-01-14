@@ -33,7 +33,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this._rightBtn = new System.Windows.Forms.Button();
             this._leftBtn = new System.Windows.Forms.Button();
-            this._retryBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _okBtn
@@ -88,23 +87,12 @@
             this._leftBtn.Visible = false;
             this._leftBtn.Click += new System.EventHandler(this.SideBtnClick);
             // 
-            // _retryBtn
-            // 
-            this._retryBtn.Location = new System.Drawing.Point(37, 74);
-            this._retryBtn.Name = "_retryBtn";
-            this._retryBtn.Size = new System.Drawing.Size(125, 23);
-            this._retryBtn.TabIndex = 5;
-            this._retryBtn.Text = "אופס, נסה/י שוב";
-            this._retryBtn.UseVisualStyleBackColor = true;
-            this._retryBtn.Click += new System.EventHandler(this._retryBtn_Click);
-            // 
             // UserInputForm
             // 
             this.AcceptButton = this._okBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(255, 113);
-            this.Controls.Add(this._retryBtn);
             this.Controls.Add(this._leftBtn);
             this.Controls.Add(this._rightBtn);
             this.Controls.Add(this.label1);
@@ -123,6 +111,5 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button _rightBtn;
         private System.Windows.Forms.Button _leftBtn;
-        private System.Windows.Forms.Button _retryBtn;
     }
 }
