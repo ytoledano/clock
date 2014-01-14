@@ -26,7 +26,7 @@ namespace AnalogClockControl
             if (displayLeftRight)
             {
                 _leftBtn.Visible = _rightBtn.Visible = true;
-                _retryBtn.Visible = textBox1.Visible = _okBtn.Visible = false;
+                textBox1.Visible = _okBtn.Visible = false;
             }
             else
             {
@@ -54,12 +54,6 @@ namespace AnalogClockControl
         private void SideBtnClick(object sender, EventArgs e)
         {
             UserInput = ((Button) sender).Name == "_leftBtn" ? 1 : -1;
-            Close();
-        }
-
-        private void _retryBtn_Click(object sender, EventArgs e)
-        {
-            UserInput = -1;
             Close();
         }
 
