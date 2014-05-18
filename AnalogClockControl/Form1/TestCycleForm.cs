@@ -38,11 +38,11 @@ namespace Form1
             clockControl.BeReady();
         }
 
-        private void OnTestComplete(int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz)
+        private void OnTestComplete(int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz, double beepSecsBefore)
         {
             if (userInputSecs != -1)
             {
-                LogResult(_i, userInputSecs, beepSecs, sideClicked, secsClicked, inhibition, soundHz);
+                LogResult(_i, userInputSecs, beepSecs, sideClicked, secsClicked, inhibition, soundHz, beepSecsBefore);
                 _i++;
             }
             _countLabel.Text = (_i + 1).ToString();
@@ -63,14 +63,14 @@ namespace Form1
             clockControl.Focus();
         }
 
-        private void LogResult(int gameNum, int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz)
+        private void LogResult(int gameNum, int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz, double beepSecsBefore)
         {
             FileInfo file = new FileInfo("output.csv");
             if (!file.Exists)
-                File.WriteAllText(file.FullName, "Subject ID,Time,Cycle Num,Test Num,User Secs,Beep Secs,Side Clicked,Inhibition,Clicked Secs,Sound HZ\r\n");
+                File.WriteAllText(file.FullName, "Subject ID,Time,Cycle Num,Test Num,User Secs,Beep Secs,Side Clicked,Inhibition,Clicked Secs,Sound HZ,Beep Secs Before\r\n");
             File.AppendAllText(file.FullName,
-                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9}\r\n", Form1.Form._idText.Text, DateTime.Now, _testNum, gameNum + 1,
-                    userInputSecs, beepSecs, sideClicked, inhibition, secsClicked, soundHz));
+                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9},{10:n2}\r\n", Form1.Form._idText.Text, DateTime.Now, _testNum, gameNum + 1,
+                    userInputSecs, beepSecs, sideClicked, inhibition, secsClicked, soundHz,beepSecsBefore));
         }
 
         protected override void OnClosing(CancelEventArgs e)

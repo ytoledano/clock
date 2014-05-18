@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Media;
+using System.Threading;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
@@ -123,12 +124,15 @@ namespace AnalogClockControl
                     if (!_isPlayedSound && MSSinceBeg() > MS_TO_SOUND)
                     {
                         _soundPlayedHz = Chance(0.5) ? SOUND_1_HZ : SOUND_2_HZ;
+                        double beforePlay = MSSinceBeg();
                         //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
                         SoundPlayer player = new SoundPlayer(_soundPlayedHz+".wav");
                         player.Play();
                         _soundPlayedMS = MSSinceBeg();
                         double beepRad = (_soundPlayedMS/CYCLE_MS)*2*PI + _needleOffset;
                         _beepSecs = (60*beepRad/(2*PI))%60;
+                        double beepRadBefore = (beforePlay / CYCLE_MS) * 2 * PI + _needleOffset;
+                        _beepSecsBefore = (60 * beepRadBefore / (2 * PI)) % 60;
                         _isPlayedSound = true;
                     }
                     if (_isPlayedSound && MSSinceBeg() > _soundPlayedMS + MS_AFTER_SOUND)
@@ -137,7 +141,7 @@ namespace AnalogClockControl
                         var userInputFurm = new UserInputForm("שמעתי את הצפצוף כשהמחוג היה ב (0-59):");
                         userInputFurm.ShowDialog();
                         int userInput = userInputFurm.UserInput;
-                        OnTestComplete(userInput, _beepSecs, "", 0, "", _soundPlayedHz);
+                        OnTestComplete(userInput, _beepSecs, "", 0, "", _soundPlayedHz, _beepSecsBefore);
                     }
                     return;
                 case 2:
@@ -145,11 +149,14 @@ namespace AnalogClockControl
                     {
                         _soundPlayedHz = Chance(_sideClicked == "right" ? 0.8 : 0.2) ? SOUND_1_HZ : SOUND_2_HZ;
                         //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        double beforePlay = MSSinceBeg();
                         SoundPlayer player = new SoundPlayer(_soundPlayedHz + ".wav");
                         player.Play();
                         _soundPlayedMS = MSSinceBeg();
                         double beepRad = (_soundPlayedMS / CYCLE_MS) * 2 * PI + _needleOffset;
                         _beepSecs = (60 * beepRad / (2 * PI)) % 60;
+                        double beepRadBefore = (beforePlay / CYCLE_MS) * 2 * PI + _needleOffset;
+                        _beepSecsBefore = (60 * beepRadBefore / (2 * PI)) % 60;
                         _isPlayedSound = true;
                     }
                     if (_isPlayedSound && MSSinceBeg() > _soundPlayedMS + MS_AFTER_SOUND)
@@ -160,7 +167,7 @@ namespace AnalogClockControl
                         int userInput = userInputFurm.UserInput;
                         double clickedRad = (_msClicked / CYCLE_MS) * 2 * PI + _needleOffset;
                         double clickedSecs = (60 * clickedRad / (2 * PI)) % 60;
-                        OnTestComplete(userInput, _beepSecs, _sideClicked, clickedSecs,"", _soundPlayedHz);
+                        OnTestComplete(userInput, _beepSecs, _sideClicked, clickedSecs,"", _soundPlayedHz, _beepSecsBefore);
                     }
                     return;
                 case 3:
@@ -168,11 +175,14 @@ namespace AnalogClockControl
                     {
                         _soundPlayedHz = Chance(_sideClicked == "right" ? 0.8 : 0.2) ? SOUND_1_HZ : SOUND_2_HZ;
                         //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        double beforePlay = MSSinceBeg();
                         SoundPlayer player = new SoundPlayer(_soundPlayedHz + ".wav");
                         player.Play();
                         _soundPlayedMS = MSSinceBeg();
                         double beepRad = (_soundPlayedMS / CYCLE_MS) * 2 * PI + _needleOffset;
                         _beepSecs = (60 * beepRad / (2 * PI)) % 60;
+                        double beepRadBefore = (beforePlay / CYCLE_MS) * 2 * PI + _needleOffset;
+                        _beepSecsBefore = (60 * beepRadBefore / (2 * PI)) % 60;
                         _isPlayedSound = true;
                     }
                     if (!_isPlayedSound && _msClicked == -1 && MSSinceBeg() > 2560)
@@ -180,11 +190,14 @@ namespace AnalogClockControl
                         _soundPlayedHz = Chance(0.5) ? SOUND_1_HZ : SOUND_2_HZ;
                         _sideClicked = "";
                         //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        double beforePlay = MSSinceBeg();
                         SoundPlayer player = new SoundPlayer(_soundPlayedHz + ".wav");
                         player.Play();
                         _soundPlayedMS = MSSinceBeg();
                         double beepRad = (_soundPlayedMS / CYCLE_MS) * 2 * PI + _needleOffset;
                         _beepSecs = (60 * beepRad / (2 * PI)) % 60;
+                        double beepRadBefore = (beforePlay / CYCLE_MS) * 2 * PI + _needleOffset;
+                        _beepSecsBefore = (60 * beepRadBefore / (2 * PI)) % 60;
                         _isPlayedSound = true;
                     }
                     if (_isPlayedSound && MSSinceBeg() > _soundPlayedMS + MS_AFTER_SOUND)
@@ -202,7 +215,7 @@ namespace AnalogClockControl
                         }
                         double clickedRad = (_msClicked / CYCLE_MS) * 2 * PI + _needleOffset;
                         double clickedSecs = (60 * clickedRad / (2 * PI)) % 60;
-                        OnTestComplete(userInput, _beepSecs, _sideClicked, clickedSecs,inhibition,_soundPlayedHz);
+                        OnTestComplete(userInput, _beepSecs, _sideClicked, clickedSecs,inhibition,_soundPlayedHz, _beepSecsBefore);
                     }
                     return;
             }
@@ -366,8 +379,9 @@ namespace AnalogClockControl
         private Timer _timer1;
         private double _soundPlayedMS;
         private double _beepSecs;
+        private double _beepSecsBefore;
 
-        public delegate void TestCompleteDel(int userInput, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz);
+        public delegate void TestCompleteDel(int userInput, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz, double beepSecsBefore);
         public event TestCompleteDel OnTestComplete;
     }
 }
