@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AnalogClockControl;
 using System.IO;
+using Clock;
 
 namespace Form1
 {
@@ -42,7 +43,7 @@ namespace Form1
         {
             if (userInputSecs != -1)
             {
-                LogResult(_i, userInputSecs, beepSecs, sideClicked, secsClicked, inhibition, soundHz, beepSecsBefore);
+                LogResult(_testNum, _i, userInputSecs, beepSecs, sideClicked, secsClicked, inhibition, soundHz, beepSecsBefore);
                 _i++;
             }
             _countLabel.Text = (_i + 1).ToString();
@@ -51,7 +52,8 @@ namespace Form1
             _clockGroup.Controls.Clear();
             if (_i >= _testCount)
             {
-                MessageBox.Show("סיימת את שלב " + _testNum);
+                //MessageBox.Show("סיימת את שלב " + _testNum);
+                (new EndOfCycleDialog(_testNum)).ShowDialog();
                 Close();
                 return;
             }
@@ -63,13 +65,13 @@ namespace Form1
             clockControl.Focus();
         }
 
-        private void LogResult(int gameNum, int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz, double beepSecsBefore)
+        public static void LogResult(int testNum, int gameNum, int userInputSecs, double beepSecs, string sideClicked, double secsClicked, string inhibition, int soundHz, double beepSecsBefore)
         {
             FileInfo file = new FileInfo("output.csv");
             if (!file.Exists)
                 File.WriteAllText(file.FullName, "Subject ID,Time,Cycle Num,Test Num,User Secs,Beep Secs,Side Clicked,Inhibition,Clicked Secs,Sound HZ,Beep Secs Before\r\n");
             File.AppendAllText(file.FullName,
-                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9},{10:n2}\r\n", Form1.Form._idText.Text, DateTime.Now, _testNum, gameNum + 1,
+                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9},{10:n2}\r\n", Form1.Form._idText.Text, DateTime.Now, testNum, gameNum + 1,
                     userInputSecs, beepSecs, sideClicked, inhibition, secsClicked, soundHz,beepSecsBefore));
         }
 
