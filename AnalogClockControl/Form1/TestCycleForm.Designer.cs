@@ -34,17 +34,21 @@
             // 
             // _clockGroup
             // 
+            this._clockGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this._clockGroup.Location = new System.Drawing.Point(12, 12);
             this._clockGroup.Name = "_clockGroup";
-            this._clockGroup.Size = new System.Drawing.Size(688, 705);
+            this._clockGroup.Size = new System.Drawing.Size(860, 887);
             this._clockGroup.TabIndex = 0;
             this._clockGroup.TabStop = false;
             this._clockGroup.Text = "שעון";
             // 
             // _countLabel
             // 
+            this._countLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this._countLabel.AutoSize = true;
-            this._countLabel.Location = new System.Drawing.Point(678, 721);
+            this._countLabel.Location = new System.Drawing.Point(850, 903);
             this._countLabel.Name = "_countLabel";
             this._countLabel.Size = new System.Drawing.Size(13, 13);
             this._countLabel.TabIndex = 1;
@@ -54,7 +58,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(712, 743);
+            this.ClientSize = new System.Drawing.Size(884, 925);
             this.Controls.Add(this._countLabel);
             this.Controls.Add(this._clockGroup);
             this.Name = "TestCycleForm";
