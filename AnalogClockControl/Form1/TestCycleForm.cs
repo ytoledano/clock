@@ -25,7 +25,7 @@ namespace Form1
         {
             _testNum = testNum;
             Text = "שעון " + testNum;
-            _testCount = _testNum == 1 ? 1 : 1;
+            _testCount = _testNum == 1 ? 25 : 50;
 
         }
 
