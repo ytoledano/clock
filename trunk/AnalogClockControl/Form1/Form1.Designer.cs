@@ -33,6 +33,8 @@
             this._test3Btn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this._idText = new System.Windows.Forms.TextBox();
+            this._makashRB = new System.Windows.Forms.RadioButton();
+            this._zifzufRB = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // _test1Btn
@@ -84,11 +86,37 @@
             this._idText.Size = new System.Drawing.Size(185, 20);
             this._idText.TabIndex = 5;
             // 
+            // _makashRB
+            // 
+            this._makashRB.AutoSize = true;
+            this._makashRB.Location = new System.Drawing.Point(72, 7);
+            this._makashRB.Name = "_makashRB";
+            this._makashRB.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this._makashRB.Size = new System.Drawing.Size(48, 17);
+            this._makashRB.TabIndex = 6;
+            this._makashRB.TabStop = true;
+            this._makashRB.Text = "מקש";
+            this._makashRB.UseVisualStyleBackColor = true;
+            // 
+            // _zifzufRB
+            // 
+            this._zifzufRB.AutoSize = true;
+            this._zifzufRB.Location = new System.Drawing.Point(8, 7);
+            this._zifzufRB.Name = "_zifzufRB";
+            this._zifzufRB.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this._zifzufRB.Size = new System.Drawing.Size(58, 17);
+            this._zifzufRB.TabIndex = 7;
+            this._zifzufRB.TabStop = true;
+            this._zifzufRB.Text = "צפצוף";
+            this._zifzufRB.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 137);
+            this.Controls.Add(this._zifzufRB);
+            this.Controls.Add(this._makashRB);
             this.Controls.Add(this._idText);
             this.Controls.Add(this.label1);
             this.Controls.Add(this._test3Btn);
@@ -108,6 +136,8 @@
         private System.Windows.Forms.Button _test3Btn;
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox _idText;
+        public System.Windows.Forms.RadioButton _makashRB;
+        public System.Windows.Forms.RadioButton _zifzufRB;
 
     }
 }

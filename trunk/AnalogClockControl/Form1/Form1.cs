@@ -25,6 +25,11 @@ namespace Form1
                 MessageBox.Show("יש להזין מזהה נבדק");
                 return;
             }
+            if (!_makashRB.Checked && !_zifzufRB.Checked)
+            {
+                MessageBox.Show("יש לבחור מקש או צפצוף");
+                return;
+            }
             var button = (Button)sender;
             (new TestCycleForm(int.Parse(button.Name.Replace("_test", "").Replace("Btn", "")))).ShowDialog();
         }
