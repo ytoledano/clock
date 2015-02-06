@@ -32,7 +32,7 @@ namespace Form1
         protected override void OnLoad(EventArgs e)
         {
             _countLabel.Text = (_i + 1).ToString();
-            AnalogClock clockControl = new AnalogClock(_testNum, true);
+            AnalogClock clockControl = new AnalogClock(_testNum, true, Form1.Form._zifzufRB.Checked);
             _clockGroup.Controls.Add(clockControl);
             clockControl.Dock = DockStyle.Fill;
             clockControl.OnTestComplete += OnTestComplete;
@@ -57,7 +57,7 @@ namespace Form1
                 Close();
                 return;
             }
-            AnalogClock clockControl = new AnalogClock(_testNum, false);
+            AnalogClock clockControl = new AnalogClock(_testNum, false, Form1.Form._zifzufRB.Checked);
             _clockGroup.Controls.Add(clockControl);
             clockControl.Dock = DockStyle.Fill;
             clockControl.OnTestComplete += OnTestComplete;
@@ -69,10 +69,10 @@ namespace Form1
         {
             FileInfo file = new FileInfo("output.csv");
             if (!file.Exists)
-                File.WriteAllText(file.FullName, "Subject ID,Time,Cycle Num,Test Num,User Secs,Beep Secs,Side Clicked,Inhibition,Clicked Secs,Sound HZ,Beep Secs Before\r\n");
+                File.WriteAllText(file.FullName, "Subject ID,Time,Cycle Num,Test Num,User Secs,Beep Secs,Side Clicked,Inhibition,Clicked Secs,Sound HZ,Beep Secs Before,Question 2\r\n");
             File.AppendAllText(file.FullName,
-                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9},{10:n2}\r\n", Form1.Form._idText.Text, DateTime.Now, testNum, gameNum + 1,
-                    userInputSecs, beepSecs, sideClicked, inhibition, secsClicked, soundHz,beepSecsBefore));
+                string.Format("{0},{1},{2},{3},{4},{5:n2},\"{6}\",\"{7}\",{8:n2},{9},{10:n2},{11}\r\n", Form1.Form._idText.Text, DateTime.Now, testNum, gameNum + 1,
+                userInputSecs, beepSecs, sideClicked, inhibition, secsClicked, soundHz,beepSecsBefore, Form1.Form._zifzufRB.Checked ? "Zifzuf" : "Makash"));
         }
 
         protected override void OnClosing(CancelEventArgs e)

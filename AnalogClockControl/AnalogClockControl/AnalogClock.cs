@@ -20,10 +20,11 @@ namespace AnalogClockControl
 
         private System.ComponentModel.IContainer components;
 
-        public AnalogClock(int testNum, bool startWithSpace)
+        public AnalogClock(int testNum, bool startWithSpace, bool isZifzufQuestionIn2)
         {
             _testNum = testNum;
             _startWithSpace = startWithSpace;
+            _isZifzufQuestionIn2 = isZifzufQuestionIn2;
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
@@ -162,7 +163,8 @@ namespace AnalogClockControl
                     if (_isPlayedSound && MSSinceBeg() > _soundPlayedMS + MS_AFTER_SOUND)
                     {
                         Stop();
-                        var userInputFurm = new UserInputForm("שמעתי את הצפצוף כשהמחוג היה ב (0-59):");
+                        string question2 = _isZifzufQuestionIn2 ? "שמעתי את הצפצוף כשהמחוג היה ב (0-59):" : "לחצתי על הכפתור כשהמחוג היה ב (0-59):";
+                        var userInputFurm = new UserInputForm(question2);
                         userInputFurm.ShowDialog();
                         int userInput = userInputFurm.UserInput;
                         double clickedRad = (_msClicked / CYCLE_MS) * 2 * PI + _needleOffset;
@@ -358,6 +360,7 @@ namespace AnalogClockControl
 
         private readonly int _testNum;
         private readonly bool _startWithSpace;
+        private readonly bool _isZifzufQuestionIn2;
         const double PI = Math.PI;
 
         private DateTime _startTime;
