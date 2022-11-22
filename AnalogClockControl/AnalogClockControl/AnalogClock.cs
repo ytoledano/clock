@@ -126,7 +126,6 @@ namespace AnalogClockControl
                     {
                         _soundPlayedHz = Chance(0.5) ? SOUND_1_HZ : SOUND_2_HZ;
                         double beforePlay = MSSinceBeg();
-                        //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
                         SoundPlayer player = new SoundPlayer(_soundPlayedHz+".wav");
                         player.Play();
                         _soundPlayedMS = MSSinceBeg();
@@ -148,8 +147,8 @@ namespace AnalogClockControl
                 case 2:
                     if (!_isPlayedSound && _msClicked != -1 && MSSinceBeg() - _msClicked > MS_SOUND_AFTER_CLICK)
                     {
-                        _soundPlayedHz = Chance(_sideClicked == "right" ? 0.8 : 0.2) ? SOUND_1_HZ : SOUND_2_HZ;
-                        //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        //_soundPlayedHz = Chance(_sideClicked == "right" ? 0.8 : 0.2) ? SOUND_1_HZ : SOUND_2_HZ;
+                        _soundPlayedHz = _sideClicked == "right" ? SOUND_1_HZ : SOUND_2_HZ;
                         double beforePlay = MSSinceBeg();
                         SoundPlayer player = new SoundPlayer(_soundPlayedHz + ".wav");
                         player.Play();
@@ -175,8 +174,8 @@ namespace AnalogClockControl
                 case 3:
                     if (!_isPlayedSound && _msClicked != -1 && MSSinceBeg() - _msClicked > MS_SOUND_AFTER_CLICK)
                     {
-                        _soundPlayedHz = Chance(_sideClicked == "right" ? 0.8 : 0.2) ? SOUND_1_HZ : SOUND_2_HZ;
-                        //ThreadPool.QueueUserWorkItem(o => Console.Beep(_soundPlayedHz, 100));
+                        //_soundPlayedHz = Chance(_sideClicked == "right" ? 0.8 : 0.2) ? SOUND_1_HZ : SOUND_2_HZ;
+                        _soundPlayedHz = _sideClicked == "right" ? SOUND_1_HZ : SOUND_2_HZ;
                         double beforePlay = MSSinceBeg();
                         SoundPlayer player = new SoundPlayer(_soundPlayedHz + ".wav");
                         player.Play();
